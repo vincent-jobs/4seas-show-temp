@@ -1,0 +1,3 @@
+[submodule "vendor/eight_sleep"]
+	path = vendor/eight_sleep
+	url = https://github.com/lukas-clarke/eight_sleep.git

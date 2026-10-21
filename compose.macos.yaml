@@ -1,0 +1,12 @@
+# macOS: run the collector natively for CoreBluetooth and Bonjour.
+# The existing web/db images build for the host CPU, including Apple Silicon.
+services:
+  web:
+    ports: !override
+      - "3000:3000"
+  db:
+    ports:
+      - "127.0.0.1:5432:5432"
+  collector:
+    profiles: ["linux-bluetooth"]
+    volumes: !reset []

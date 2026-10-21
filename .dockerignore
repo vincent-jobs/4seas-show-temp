@@ -1,0 +1,5 @@
+*
+!collector/
+!collector/**
+collector/**/__pycache__
+collector/**/*.pyc

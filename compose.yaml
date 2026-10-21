@@ -1,0 +1,53 @@
+name: fourseas
+
+services:
+  db:
+    image: docker.io/library/postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+      - ./db/003_eight_sleep.sql:/docker-entrypoint-initdb.d/003-eight-sleep.sql:ro
+      - ./db/004_experiences.sql:/docker-entrypoint-initdb.d/004-experiences.sql:ro
+      - ./db/005_parallel_experiences.sql:/docker-entrypoint-initdb.d/005-parallel-experiences.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  web:
+    image: localhost/fourseas-web:latest
+    build: ./web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      POSTGRES_PASSWORD: docker
+    depends_on:
+      db:
+        condition: service_healthy
+
+  collector:
+    image: localhost/fourseas-collector:latest
+    build:
+      context: .
+      dockerfile: collector/Dockerfile
+    restart: unless-stopped
+    stop_grace_period: 40s
+    environment:
+      POSTGRES_PASSWORD: docker
+      EIGHT_EMAIL: ${EIGHT_EMAIL:-}
+      EIGHT_PASSWORD: ${EIGHT_PASSWORD:-}
+    volumes:
+      - /run/dbus/system_bus_socket:/run/dbus/system_bus_socket:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

@@ -1,0 +1,4 @@
+bleak==3.0.2
+dbus-fast==5.2.0; sys_platform == "linux"
+asyncpg==0.32.0
+httpx==0.28.1

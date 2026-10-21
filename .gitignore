@@ -1,0 +1,19 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+*.csv
+node_modules/
+.next/
+*.tsbuildinfo
+test-results/
+
+.runtime/
+
+# Local sensor exports and database backups
+data/
+*.dump
+*.log
+.DS_Store
